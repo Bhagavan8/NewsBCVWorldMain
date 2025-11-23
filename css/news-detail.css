@@ -889,8 +889,7 @@
 /* === Forced sizes for in-article ad slots === */
 .ad-space.in-article,
 .ad-space.horizontal-ad,
-.ad-space.ad-inline,
-.ad-section-responsive {
+.ad-space.ad-inline{
     display: block !important;
     width: 100% !important;
     overflow: visible !important;
@@ -903,8 +902,7 @@
 
 /* Ensure the <ins> receives a min-height too (prevents iframe collapse) */
 .ad-space.in-article ins.adsbygoogle,
-.ad-space.horizontal-ad ins.adsbygoogle,
-.ad-section-responsive ins.adsbygoogle {
+.ad-space.horizontal-ad ins.adsbygoogle{
     display: block !important;
     width: 100% !important;
     min-height: 250px !important;       /* must match above */
@@ -915,8 +913,8 @@
 /* Smaller screens: reduce min-height so mobile looks ok */
 @media (max-width: 768px) {
     .ad-space.in-article,
-    .ad-space.horizontal-ad,
-    .ad-section-responsive {
+    .ad-space.horizontal-ad
+    {
         min-height: 180px !important;
     }
 
