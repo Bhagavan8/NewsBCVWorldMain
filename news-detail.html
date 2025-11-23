@@ -17,7 +17,6 @@
     <link href="css/related-articles.css" rel="stylesheet">
 
     <!-- Google AdSense -->
-
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-YEJYBRRRL7"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -25,8 +24,6 @@
         gtag('js', new Date());
         gtag('config', 'G-YEJYBRRRL7');
     </script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659"
-        crossorigin="anonymous"></script>
    
 </head>
 
@@ -45,9 +42,32 @@
             <!-- Left Sidebar - Ads -->
             <div class="col-lg-2">
                 <div class="sticky-sidebar">
-                    <div class="ad-space vertical-ad mb-4">
-                        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                            data-ad-slot="9038226694" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                    <div class="ad-space vertical-ad mb-4" id="left-sidebar-ad">
+                        <div class="ad-container">
+                            <ins class="adsbygoogle" 
+                                style="display:block" 
+                                data-ad-client="ca-pub-6284022198338659"
+                                data-ad-slot="9038226694" 
+                                data-ad-format="auto" 
+                                data-full-width-responsive="true"></ins>
+                        </div>
+                        <!-- Backup content for unfilled ads -->
+                        <div class="ad-backup-content" style="display: none;">
+                            <div class="sponsored-content">
+                                <h6>📰 Trending Stories</h6>
+                                <div class="list-group list-group-flush">
+                                    <a href="/trending" class="list-group-item list-group-item-action small">
+                                        Hot topics this week
+                                    </a>
+                                    <a href="/breaking" class="list-group-item list-group-item-action small">
+                                        Breaking news
+                                    </a>
+                                    <a href="/popular" class="list-group-item list-group-item-action small">
+                                        Most read articles
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -76,9 +96,25 @@
                             </nav>
                         </div>
                     </div>
-                    <div class="ad-section-responsive">
-                        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                            data-ad-slot="3330604448" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                    
+                    <!-- Top Ad Banner -->
+                    <div class="ad-section-responsive mb-4">
+                        <div class="ad-banner-horizontal" id="top-banner-ad">
+                            <ins class="adsbygoogle" 
+                                style="display:block" 
+                                data-ad-client="ca-pub-6284022198338659"
+                                data-ad-slot="3330604448" 
+                                data-ad-format="auto" 
+                                data-full-width-responsive="true"></ins>
+                            <!-- Backup content for unfilled ads -->
+                            <div class="ad-backup-content" style="display: none;">
+                                <div class="sponsored-content text-center p-4">
+                                    <h5>🌟 Featured Content</h5>
+                                    <p class="mb-3">Discover amazing stories curated for you</p>
+                                    <a href="/featured" class="btn btn-primary">Explore Now</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="article-header mb-4">
@@ -107,11 +143,24 @@
                     </div>
 
                     <!-- Mid-Article Ad -->
-                    <div class="ad-space horizontal-ad my-4 in-article">
-                        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                            data-ad-slot="6412063350" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                    <div class="ad-section-responsive my-4">
+                        <div class="ad-banner-horizontal" id="mid-article-ad">
+                            <ins class="adsbygoogle" 
+                                style="display:block" 
+                                data-ad-client="ca-pub-6284022198338659"
+                                data-ad-slot="6412063350" 
+                                data-ad-format="auto" 
+                                data-full-width-responsive="true"></ins>
+                            <!-- Backup content for unfilled ads -->
+                            <div class="ad-backup-content" style="display: none;">
+                                <div class="sponsored-content text-center p-4">
+                                    <h5>📖 Continue Reading</h5>
+                                    <p class="mb-3">More interesting content ahead</p>
+                                    <a href="/discover" class="btn btn-success">Discover More</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
 
                     <!-- Author Bio -->
                     <div class="author-bio mt-4">
@@ -170,12 +219,25 @@
                         </a>
                     </div>
                 </nav>
-                <div class="ad-section-responsive">
-                    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                        data-ad-slot="8172701732" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                    <script>
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                    </script>
+                
+                <!-- Bottom Ad Banner -->
+                <div class="ad-section-responsive mb-4">
+                    <div class="ad-banner-horizontal" id="bottom-banner-ad">
+                        <ins class="adsbygoogle" 
+                            style="display:block" 
+                            data-ad-client="ca-pub-6284022198338659"
+                            data-ad-slot="8172701732" 
+                            data-ad-format="auto" 
+                            data-full-width-responsive="true"></ins>
+                        <!-- Backup content for unfilled ads -->
+                        <div class="ad-backup-content" style="display: none;">
+                            <div class="sponsored-content text-center p-4">
+                                <h5>🔔 Stay Updated</h5>
+                                <p class="mb-3">Never miss important updates</p>
+                                <a href="/subscribe" class="btn btn-warning">Subscribe Now</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <section class="read-more-section">
@@ -186,12 +248,25 @@
                         </div>
                     </div>
                 </section>
-                <div class="ad-section-responsive">
-                    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                        data-ad-slot="1606582944" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                    <script>
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                    </script>
+                
+                <!-- Related Articles Ad -->
+                <div class="ad-section-responsive mt-4">
+                    <div class="ad-banner-horizontal" id="related-articles-ad">
+                        <ins class="adsbygoogle" 
+                            style="display:block" 
+                            data-ad-client="ca-pub-6284022198338659"
+                            data-ad-slot="1606582944" 
+                            data-ad-format="auto" 
+                            data-full-width-responsive="true"></ins>
+                        <!-- Backup content for unfilled ads -->
+                        <div class="ad-backup-content" style="display: none;">
+                            <div class="sponsored-content text-center p-4">
+                                <h5>📰 More Stories</h5>
+                                <p class="mb-3">Explore our extensive article collection</p>
+                                <a href="/articles" class="btn btn-info">Browse All</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -217,9 +292,32 @@
                     </div>
 
                     <!-- Advertisement -->
-                    <div class="ad-space sidebar-ad mb-4">
-                        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                            data-ad-slot="4287736546" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                    <div class="ad-space sidebar-ad mb-4" id="right-sidebar-ad">
+                        <div class="ad-container">
+                            <ins class="adsbygoogle" 
+                                style="display:block" 
+                                data-ad-client="ca-pub-6284022198338659"
+                                data-ad-slot="4287736546" 
+                                data-ad-format="auto" 
+                                data-full-width-responsive="true"></ins>
+                        </div>
+                        <!-- Backup content for unfilled ads -->
+                        <div class="ad-backup-content" style="display: none;">
+                            <div class="sponsored-content">
+                                <h6>🔥 Popular Now</h6>
+                                <div class="list-group list-group-flush">
+                                    <a href="/trending" class="list-group-item list-group-item-action small">
+                                        Trending stories
+                                    </a>
+                                    <a href="/viral" class="list-group-item list-group-item-action small">
+                                        Viral content
+                                    </a>
+                                    <a href="/exclusive" class="list-group-item list-group-item-action small">
+                                        Exclusive reports
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -229,6 +327,17 @@
     <div class="reading-progress"></div>
     <div id="footer-container"></div>
 
+    <!-- AdSense Script -->
+    <script>
+        (function() {
+            var script = document.createElement('script');
+            script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659';
+            script.crossOrigin = 'anonymous';
+            script.async = true;
+            document.head.appendChild(script);
+        })();
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="js/components/component-loader.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -237,6 +346,156 @@
     <script type="module" src="js/sidebar-content.js"></script>
     <script type="module" src="js/article-navigation.js"></script>
     <script type="module" src="js/related-articles.js"></script>
+
+    <!-- Enhanced AdSense Initialization -->
+    <script>
+        // Enhanced AdSense initialization with fallback handling
+        function initializeAdSense() {
+            console.log('🚀 Initializing AdSense for news detail page...');
+            
+            if (window.adsbygoogle) {
+                // Configure global AdSense settings for better fill rates
+                window.adsbygoogle = window.adsbygoogle || [];
+                window.adsbygoogle.push({
+                    params: {
+                        // Enhanced targeting parameters
+                        page_url: window.location.href,
+                        referrer: document.referrer
+                    }
+                });
+                
+                // Initialize all ads
+                (adsbygoogle = window.adsbygoogle || []).push({});
+                console.log('✅ AdSense initialized successfully');
+                
+                // Set up monitoring for unfilled ads
+                setTimeout(monitorAdStatus, 3000);
+                
+                // Set up periodic refresh for better fill rates
+                setupAdRefresh();
+            } else {
+                console.log('⚠️ AdSense not loaded yet, retrying...');
+                setTimeout(initializeAdSense, 1000);
+            }
+        }
+
+        // Monitor ad status and handle unfilled ads
+        function monitorAdStatus() {
+            const ads = document.querySelectorAll('ins.adsbygoogle');
+            console.log(`🔍 Monitoring ${ads.length} ad units...`);
+            
+            ads.forEach((ad, index) => {
+                const status = ad.getAttribute('data-ad-status');
+                const container = ad.closest('.ad-container, .ad-banner-horizontal');
+                const backupContent = container ? container.querySelector('.ad-backup-content') : null;
+                
+                console.log(`Ad ${index + 1} (Slot: ${ad.getAttribute('data-ad-slot')}) status:`, status);
+                
+                if (status === 'unfilled') {
+                    console.log(`❌ Ad slot ${ad.getAttribute('data-ad-slot')} is unfilled - showing backup content`);
+                    
+                    // Show backup content after 5 seconds if ad remains unfilled
+                    setTimeout(() => {
+                        if (ad.getAttribute('data-ad-status') === 'unfilled' && backupContent) {
+                            ad.style.display = 'none';
+                            backupContent.style.display = 'block';
+                            console.log(`✅ Backup content displayed for slot ${ad.getAttribute('data-ad-slot')}`);
+                        }
+                    }, 5000);
+                    
+                    // Try to refresh the ad after 30 seconds
+                    setTimeout(() => refreshAd(ad), 30000);
+                } else if (status === 'filled') {
+                    console.log(`✅ Ad slot ${ad.getAttribute('data-ad-slot')} is filled successfully`);
+                    if (backupContent) {
+                        backupContent.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // Refresh individual ad
+        function refreshAd(adElement) {
+            const slot = adElement.getAttribute('data-ad-slot');
+            console.log(`🔄 Refreshing ad: ${slot}`);
+            
+            // Remove and re-add the ad element
+            const parent = adElement.parentElement;
+            const backupContent = parent.nextElementSibling;
+            
+            if (backupContent && backupContent.style.display === 'block') {
+                backupContent.style.display = 'none';
+            }
+            
+            const newAd = adElement.cloneNode(true);
+            parent.removeChild(adElement);
+            parent.appendChild(newAd);
+            
+            // Reinitialize
+            if (window.adsbygoogle) {
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            }
+        }
+
+        // Auto-refresh ads periodically for better fill rates
+        function setupAdRefresh() {
+            setInterval(() => {
+                console.log('🔄 Auto-refreshing ads...');
+                if (window.adsbygoogle) {
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                    // Re-monitor status after refresh
+                    setTimeout(monitorAdStatus, 2000);
+                }
+            }, 180000); // Refresh every 3 minutes
+        }
+
+        // Manual ad refresh function (call this if needed)
+        window.refreshAllAds = function() {
+            console.log('🔄 Manually refreshing all ads...');
+            if (window.adsbygoogle) {
+                (adsbygoogle = window.adsbygoogle || []).push({});
+                setTimeout(monitorAdStatus, 2000);
+            }
+        };
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 DOM loaded - starting ad initialization');
+            initializeAdSense();
+        });
+
+        // Initialize when window loads
+        window.addEventListener('load', function() {
+            console.log('🌐 Window loaded - final ad initialization');
+            setTimeout(initializeAdSense, 1000);
+        });
+
+        // Debug function
+        function debugAds() {
+            console.log('=== AD DEBUG INFO ===');
+            const ads = document.querySelectorAll('ins.adsbygoogle');
+            console.log('Total ad units found:', ads.length);
+            
+            ads.forEach((ad, index) => {
+                const rect = ad.getBoundingClientRect();
+                const styles = window.getComputedStyle(ad);
+                console.log(`Ad ${index + 1} (Slot: ${ad.getAttribute('data-ad-slot')}):`, {
+                    visible: rect.width > 0 && rect.height > 0,
+                    dimensions: `${Math.round(rect.width)}x${Math.round(rect.height)}`,
+                    display: styles.display,
+                    visibility: styles.visibility,
+                    status: ad.getAttribute('data-ad-status'),
+                    parentVisible: ad.parentElement.offsetHeight > 0
+                });
+            });
+        }
+
+        // Run debug after load
+        setTimeout(debugAds, 5000);
+
+        // Expose debug function globally
+        window.debugAds = debugAds;
+    </script>
 </body>
 
 </html>

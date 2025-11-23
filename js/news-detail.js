@@ -61,57 +61,96 @@ function setupShareButtons(newsData) {
     };
 }
 
-// AD FIX: Function to initialize all ads
+// AD FIX: Enhanced function to initialize all ads
 function initializeAds() {
     try {
+        console.log('🔄 Initializing ads in news detail...');
         setTimeout(() => {
             const adUnits = document.querySelectorAll('.adsbygoogle');
             adUnits.forEach((unit, index) => {
                 try {
                     if (unit.getAttribute('data-init') === 'true') return;
                     if (unit.innerHTML && unit.innerHTML.trim().length > 0) return;
+                    
+                    // Ensure proper styling before initialization
+                    unit.style.display = 'block';
+                    unit.style.width = '100%';
+                    unit.style.minHeight = '200px';
+                    unit.style.visibility = 'visible';
+                    unit.style.opacity = '1';
+                    
                     (adsbygoogle = window.adsbygoogle || []).push({});
                     unit.setAttribute('data-init', 'true');
+                    console.log(`✅ Ad unit ${index + 1} initialized`);
                 } catch (e) {
-                    console.error(`Error initializing ad unit ${index + 1}:`, e);
+                    console.error(`❌ Error initializing ad unit ${index + 1}:`, e);
                 }
             });
-        }, 500);
+        }, 1000);
     } catch (error) {
         console.error('Error in initializeAds:', error);
     }
 }
 
- 
-
-// AD FIX: Function to check and fix ad containers
+// AD FIX: Enhanced function to check and fix ad containers
 function fixAdContainers() {
-    const adSpaces = document.querySelectorAll('.ad-space');
-    adSpaces.forEach(space => {
+    console.log('🔧 Fixing ad containers...');
+    const adSpaces = document.querySelectorAll('.ad-space, .ad-banner-horizontal');
+    adSpaces.forEach((space, index) => {
         // Visual rules for the container
         space.style.display = 'block';
         space.style.overflow = 'visible';
         space.style.contain = 'none';
         space.style.position = 'relative';
+        space.style.visibility = 'visible';
+        space.style.opacity = '1';
 
-        // ensure a minimum height so the slot doesn't collapse
-        space.style.minHeight = space.classList.contains('vertical-ad') ? '600px' : '250px';
+        // Ensure a minimum height so the slot doesn't collapse
+        if (space.classList.contains('vertical-ad')) {
+            space.style.minHeight = '600px';
+        } else if (space.classList.contains('sidebar-ad')) {
+            space.style.minHeight = '300px';
+        } else {
+            space.style.minHeight = '250px';
+        }
 
         const ad = space.querySelector('ins.adsbygoogle');
         if (ad) {
             ad.style.display = 'block';
             ad.style.width = '100%';
-            // IMPORTANT: set minHeight, do NOT set height='' (which can collapse)
-            ad.style.minHeight = space.classList.contains('vertical-ad') ? '600px' : '250px';
+            ad.style.minHeight = space.classList.contains('vertical-ad') ? '600px' : '120px';
             ad.style.height = 'auto';
             ad.style.overflow = 'visible';
             ad.style.contain = 'none';
+            ad.style.visibility = 'visible';
+            ad.style.opacity = '1';
             
+            console.log(`✅ Fixed ad container ${index + 1}`);
         }
     });
 }
 
-
+// AD FIX: Function to handle ad status monitoring
+function monitorAndHandleAds() {
+    setTimeout(() => {
+        const ads = document.querySelectorAll('ins.adsbygoogle');
+        console.log(`🔍 Monitoring ${ads.length} ad units for status...`);
+        
+        ads.forEach((ad) => {
+            const status = ad.getAttribute('data-ad-status');
+            const container = ad.closest('.ad-container, .ad-banner-horizontal');
+            const backupContent = container ? container.querySelector('.ad-backup-content') : null;
+            
+            if (status === 'unfilled' && backupContent) {
+                console.log(`❌ Ad unfilled, showing backup content for slot: ${ad.getAttribute('data-ad-slot')}`);
+                ad.style.display = 'none';
+                backupContent.style.display = 'block';
+            } else if (status === 'filled' && backupContent) {
+                backupContent.style.display = 'none';
+            }
+        });
+    }, 5000); // Check after 5 seconds
+}
 
 async function incrementViewCount(newsId) {
     try {
@@ -192,20 +231,33 @@ function displayNewsDetail(newsData) {
         contentContainer.innerHTML += `<p>${paragraph}</p>`;
         if ((index + 1) % 3 === 0 && index < paragraphs.length - 1) {
             contentContainer.innerHTML += `
-                <div class="ad-space horizontal-ad my-4">
-                    <ins class="adsbygoogle" 
-                         style="display:block" 
-                         data-ad-client="ca-pub-6284022198338659" 
-                         data-ad-slot="6412063350" 
-                         data-ad-format="auto" 
-                         data-full-width-responsive="true"></ins>
+                <div class="ad-section-responsive my-4">
+                    <div class="ad-banner-horizontal" id="in-content-ad-${index}">
+                        <ins class="adsbygoogle" 
+                             style="display:block" 
+                             data-ad-client="ca-pub-6284022198338659" 
+                             data-ad-slot="6412063350" 
+                             data-ad-format="auto" 
+                             data-full-width-responsive="true"></ins>
+                        <!-- Backup content for unfilled ads -->
+                        <div class="ad-backup-content" style="display: none;">
+                            <div class="sponsored-content text-center p-3">
+                                <h6>📖 Continue Reading</h6>
+                                <p class="mb-2 small">More interesting content ahead</p>
+                                <a href="/discover" class="btn btn-sm btn-outline-primary">Discover More</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>`;
         }
     });
 
+    // Initialize ads after content is loaded
     setTimeout(() => {
         fixAdContainers();
-    }, 1000);
+        initializeAds();
+        monitorAndHandleAds();
+    }, 1500);
 
     const imageContainer = document.querySelector('.featured-image-container');
     if (imageContainer && newsData.imagePath) {
@@ -429,10 +481,6 @@ async function loadNewsDetail() {
         // Display the news content first
         await displayNewsDetail(newsData);
 
-        setTimeout(() => {
-            fixAdContainers();
-        }, 1500);
-
         // Initialize components after ensuring we have valid data
         const commentsManager = new CommentsManager(newsId);
         const navigation = new ArticleNavigation();
@@ -475,9 +523,15 @@ window.addEventListener('scroll', () => {
 window.addEventListener('load', () => {
     setTimeout(() => {
         fixAdContainers();
+        initializeAds();
     }, 2000);
 });
 
 window.addEventListener('resize', () => {
     setTimeout(fixAdContainers, 500);
 });
+
+// Export functions for global access
+window.initializeAds = initializeAds;
+window.fixAdContainers = fixAdContainers;
+window.monitorAndHandleAds = monitorAndHandleAds;
