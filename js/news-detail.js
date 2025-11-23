@@ -1,4 +1,6 @@
-// news-detail.js
+// news-detail.js (full updated)
+// Assumes adsissue.js is loaded (adsHelper global available)
+
 import { auth, db } from './firebase-config.js';
 import {
     doc,
@@ -70,62 +72,38 @@ function setupShareButtons(newsData) {
     }
 }
 
-// AD FIX: Enhanced function to initialize all ads (safe: push each only once)
-function initializeAds() {
-    try {
-        console.log('🔄 initializeAds(): checking ad units...');
-        document.querySelectorAll('ins.adsbygoogle').forEach((unit, index) => {
-            try {
-                if (unit._pushed) return; // already pushed
-                unit.style.display = 'block';
-                unit.style.visibility = 'visible';
-                // safe push
-                if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
-                    try {
-                        window.adsbygoogle.push({});
-                        unit._pushed = true;
-                        console.log(`✅ Ad unit ${index + 1} pushed`);
-                    } catch (pushErr) {
-                        console.warn('Ad push error', pushErr);
-                    }
-                } else {
-                    // retry shortly if the library isn't ready yet
-                    setTimeout(() => {
-                        if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
-                            try {
-                                window.adsbygoogle.push({});
-                                unit._pushed = true;
-                                console.log(`✅ Ad unit ${index + 1} pushed on retry`);
-                            } catch (pushErr) {
-                                console.warn('Ad push retry failed', pushErr);
-                            }
-                        }
-                    }, 2000);
-                }
-            } catch (e) {
-                console.error('Error initializing ad unit:', e);
-            }
-        });
-    } catch (err) {
-        console.error('initializeAds error', err);
+// AD helpers usage: use window.adsHelper.* (provided by adsissue.js)
+function ensureAdsHelperAvailable() {
+    if (!window.adsHelper) {
+        console.warn('adsHelper not available yet; make sure js/adsissue.js is loaded before this file.');
     }
 }
 
-// AD FIX: Enhanced function to check and fix ad containers
+// Initialize ads for existing slots (safe)
+function initPageAds() {
+    if (window.adsHelper && typeof window.adsHelper.safeInitAndMonitor === 'function') {
+        window.adsHelper.safeInitAndMonitor();
+    } else {
+        // fallback: attempt to initialize after a short delay
+        setTimeout(() => {
+            if (window.adsHelper && typeof window.adsHelper.safeInitAndMonitor === 'function') {
+                window.adsHelper.safeInitAndMonitor();
+            }
+        }, 1000);
+    }
+}
+
+// Fix containers basic adjustments
 function fixAdContainers() {
-    console.log('🔧 Fixing ad containers...');
     const adSpaces = document.querySelectorAll('.ad-space, .ad-banner-horizontal, .ad-section-responsive');
-    adSpaces.forEach((space, index) => {
+    adSpaces.forEach((space) => {
         try {
-            // Visual rules for the container (safe, minimal)
             space.style.display = 'block';
             space.style.overflow = 'visible';
             space.style.contain = 'none';
             space.style.position = 'relative';
             space.style.visibility = 'visible';
             space.style.opacity = '1';
-
-            // Reasonable minimums
             if (space.classList.contains('vertical-ad')) {
                 space.style.minHeight = '400px';
             } else if (space.classList.contains('sidebar-ad')) {
@@ -133,7 +111,6 @@ function fixAdContainers() {
             } else {
                 space.style.minHeight = '120px';
             }
-
             const ad = space.querySelector('ins.adsbygoogle');
             if (ad) {
                 ad.style.display = 'block';
@@ -144,50 +121,11 @@ function fixAdContainers() {
                 ad.style.contain = 'none';
                 ad.style.visibility = 'visible';
                 ad.style.opacity = '1';
-                console.log(`✅ Fixed ad container ${index + 1}`);
             }
         } catch (e) {
-            console.warn('fixAdContainers error for container', index, e);
+            console.warn('fixAdContainers error', e);
         }
     });
-}
-
-// AD FIX: Function to handle ad status monitoring (without backup content)
-function monitorAndHandleAds() {
-    // run checks after a short delay to give creatives time
-    setTimeout(() => {
-        const ads = document.querySelectorAll('ins.adsbygoogle');
-        console.log(`🔍 Monitoring ${ads.length} ad units for status...`);
-
-        ads.forEach((ad) => {
-            try {
-                const status = ad.getAttribute('data-ad-status');
-                const container = ad.closest('.ad-container, .ad-banner-horizontal, .ad-section-responsive');
-
-                // If explicit unfilled status, hide the ad element to avoid blank iframe
-                if (status === 'unfilled') {
-                    console.log(`❌ Ad unfilled for slot ${ad.getAttribute('data-ad-slot')}. Hiding ad element.`);
-                    ad.style.display = 'none';
-                    if (container) container.style.minHeight = '0';
-                    return;
-                }
-
-                // Otherwise use iframe height heuristic and hide if tiny
-                const iframe = ad.querySelector('iframe') || (container && container.querySelector('iframe'));
-                const h = iframe ? (iframe.offsetHeight || iframe.clientHeight || 0) : 0;
-                if (h < 50) {
-                    console.log(`❌ Ad iframe tiny (${h}px) for slot ${ad.getAttribute('data-ad-slot')}. Hiding ad element.`);
-                    ad.style.display = 'none';
-                    if (container) container.style.minHeight = '0';
-                } else {
-                    // visible creative
-                    ad.style.display = 'block';
-                }
-            } catch (e) {
-                console.warn('monitorAndHandleAds error', e);
-            }
-        });
-    }, 3000);
 }
 
 async function incrementViewCount(newsId) {
@@ -209,25 +147,16 @@ async function incrementViewCount(newsId) {
             const userViewsDoc = await getDoc(userViewsRef);
 
             if (!userViewsDoc.exists()) {
-                // Create the document if it doesn't exist
-                await setDoc(userViewsRef, {
-                    viewedNews: [newsId]
-                });
+                await setDoc(userViewsRef, { viewedNews: [newsId] });
             } else if (!userViewsDoc.data().viewedNews?.includes(newsId)) {
-                // Update existing document
-                await updateDoc(userViewsRef, {
-                    viewedNews: arrayUnion(newsId)
-                });
+                await updateDoc(userViewsRef, { viewedNews: arrayUnion(newsId) });
             } else {
-                return; // Already viewed
+                return;
             }
         }
 
-        // Increment view count
         const newsRef = doc(db, 'news', newsId);
-        await updateDoc(newsRef, {
-            views: increment(1)
-        });
+        await updateDoc(newsRef, { views: increment(1) });
     } catch (error) {
         console.error('Error updating view count:', error);
     }
@@ -244,7 +173,6 @@ function displayNewsDetail(newsData) {
                 : newsData.title;
         }
 
-        // Update category badge
         const categoryBadge = document.querySelector('.category-badge');
         if (categoryBadge) {
             if (newsData.category) {
@@ -255,7 +183,6 @@ function displayNewsDetail(newsData) {
             categoryBadge.classList.add('animate-badge');
         }
 
-        // Update article details
         const articleTitleEl = document.querySelector('.article-title');
         if (articleTitleEl) articleTitleEl.textContent = newsData.title || '';
 
@@ -267,23 +194,17 @@ function displayNewsDetail(newsData) {
             dateElement.textContent = formatDate(newsData.createdAt);
         }
 
-        // Split content into paragraphs and add ads between them (safe DOM insertion)
         const paragraphs = (newsData.content || '').split('\n\n');
         const contentContainer = document.querySelector('.article-content');
         if (!contentContainer) return;
 
-        // clear container first
         contentContainer.innerHTML = '';
 
-        const UNFILLED_PUSH_FALLBACK_MS = 5000;
-
         paragraphs.forEach((paragraph, index) => {
-            // safe paragraph insertion
             const p = document.createElement('p');
             p.textContent = paragraph;
             contentContainer.appendChild(p);
 
-            // insert ad every 3 paragraphs (except after last)
             if ((index + 1) % 3 === 0 && index < paragraphs.length - 1) {
                 const adSection = document.createElement('div');
                 adSection.className = 'ad-section-responsive my-4';
@@ -303,78 +224,15 @@ function displayNewsDetail(newsData) {
                 adBanner.appendChild(ins);
                 adSection.appendChild(adBanner);
                 contentContainer.appendChild(adSection);
-
-                // safe push helper
-                const pushAdSafely = () => {
-                    if (ins._pushed) return;
-                    if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
-                        try {
-                            window.adsbygoogle.push({});
-                            ins._pushed = true;
-                        } catch (e) {
-                            console.warn('ads push failed', e);
-                        }
-                    } else {
-                        setTimeout(() => {
-                            if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
-                                try {
-                                    window.adsbygoogle.push({});
-                                    ins._pushed = true;
-                                } catch (e) {
-                                    console.warn('ads push retry failed', e);
-                                }
-                            }
-                        }, UNFILLED_PUSH_FALLBACK_MS);
-                    }
-                };
-
-                // lazy-init when visible (recommended)
-                if ('IntersectionObserver' in window) {
-                    const obs = new IntersectionObserver((entries, o) => {
-                        entries.forEach(entry => {
-                            if (entry.isIntersecting) {
-                                pushAdSafely();
-                                o.unobserve(entry.target);
-                                // check iframe height after a short wait and hide if tiny
-                                setTimeout(() => {
-                                    const iframe = ins.querySelector('iframe') || adBanner.querySelector('iframe');
-                                    const h = iframe ? (iframe.offsetHeight || iframe.clientHeight || 0) : 0;
-                                    if (h < 50) {
-                                        ins.style.display = 'none';
-                                        adBanner.style.minHeight = '0';
-                                    } else {
-                                        ins.style.display = 'block';
-                                    }
-                                }, 3000);
-                            }
-                        });
-                    }, { threshold: 0.25 });
-                    obs.observe(adBanner);
-                } else {
-                    // fallback: push immediately
-                    pushAdSafely();
-                    setTimeout(() => {
-                        const iframe = ins.querySelector('iframe') || adBanner.querySelector('iframe');
-                        const h = iframe ? (iframe.offsetHeight || iframe.clientHeight || 0) : 0;
-                        if (h < 50) {
-                            ins.style.display = 'none';
-                            adBanner.style.minHeight = '0';
-                        } else {
-                            ins.style.display = 'block';
-                        }
-                    }, 3000);
-                }
             }
         });
 
-        // Fix containers and initialize ads for any inserted ad slots
+        // After dynamic insertion, run our ad helper to initialize lazily and monitor
         setTimeout(() => {
             fixAdContainers();
-            initializeAds();
-            monitorAndHandleAds();
+            initPageAds(); // triggers adsHelper.safeInitAndMonitor() when available
         }, 800);
 
-        // Featured image
         const imageContainer = document.querySelector('.featured-image-container');
         if (imageContainer && newsData.imagePath) {
             imageContainer.innerHTML = `
@@ -546,7 +404,6 @@ async function loadCategoryNews(category) {
     }
 }
 
-// Main loader for news detail
 async function loadNewsDetail() {
     try {
         showLoader();
@@ -573,17 +430,13 @@ async function loadNewsDetail() {
             ...docSnap.data()
         };
 
-        // Display the news content first
         await displayNewsDetail(newsData);
 
-        // Initialize components after ensuring we have valid data
         const commentsManager = new CommentsManager(newsId);
         const navigation = new ArticleNavigation();
 
-        // Use the imported relatedArticles instance
         await relatedArticles.loadRelatedArticles(newsData);
 
-        // Only proceed with related content if we have a valid category
         if (newsData.category) {
             await Promise.all([
                 loadRelatedNews(newsData.category),
@@ -593,7 +446,6 @@ async function loadNewsDetail() {
                 incrementViewCount(newsId)
             ]);
 
-            // Initialize comments after other content is loaded
             await commentsManager.initialize();
         } else {
             console.warn('News category is undefined');
@@ -606,22 +458,27 @@ async function loadNewsDetail() {
     }
 }
 
-// Event listeners
 document.addEventListener('DOMContentLoaded', loadNewsDetail);
 
-// Reading progress
+// reading progress
 window.addEventListener('scroll', () => {
     const docElement = document.documentElement;
     const percentScrolled = (docElement.scrollTop / (docElement.scrollHeight - docElement.clientHeight)) * 100;
     document.documentElement.style.setProperty('--scroll', `${percentScrolled}%`);
 });
 
-// Fix ad containers on resize (debounced small delay)
+// on resize ensure ad containers are fixed
 window.addEventListener('resize', () => {
     setTimeout(fixAdContainers, 500);
 });
 
-// Export functions for global access if needed
-window.initializeAds = initializeAds;
-window.fixAdContainers = fixAdContainers;
-window.monitorAndHandleAds = monitorAndHandleAds;
+// init page ad call (best-effort; adsissue auto-runs too)
+setTimeout(() => {
+    initPageAds();
+}, 1200);
+
+// export for debug
+window.newsDetailHelpers = {
+    initPageAds,
+    fixAdContainers
+};

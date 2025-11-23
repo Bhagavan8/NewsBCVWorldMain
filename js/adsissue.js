@@ -1,13 +1,16 @@
 /* js/adsissue.js
-   Safe AdSense initializer + monitor
-   - pushes each ins only once
-   - lazy-loads in-content ads using IntersectionObserver
+   Single authoritative AdSense helper:
+   - pushes each <ins class="adsbygoogle"> only once
+   - lazy-initializes in-content ads with IntersectionObserver
    - hides tiny/empty slots to avoid blank space
+   - exposes debug helpers
 */
 
 (function () {
-  const UNFILLED_TIMEOUT = 3500;
+  const UNFILLED_TIMEOUT = 3500; // ms to wait before deciding it's unfilled/tiny
+  const MIN_FRAME_HEIGHT = 50;   // px -> anything smaller is considered empty
 
+  // Wait until window.adsbygoogle array exists (script loaded)
   function waitForAdsByGoogle(timeout = 5000) {
     return new Promise((resolve) => {
       if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) return resolve(true);
@@ -25,132 +28,184 @@
     });
   }
 
+  // Push the adsbygoogle slot safely (only once per ins)
+  function pushInsSafe(ins) {
+    if (!ins || ins._pushed) return;
+    try {
+      if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
+        window.adsbygoogle.push({});
+        ins._pushed = true;
+        // mark timestamp for debugging
+        ins._pushedAt = Date.now();
+      } else {
+        // schedule a retry
+        setTimeout(() => {
+          try {
+            if (!ins._pushed && window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
+              window.adsbygoogle.push({});
+              ins._pushed = true;
+              ins._pushedAt = Date.now();
+            }
+          } catch (e) { console.warn('ads push retry failed', e); }
+        }, 1200);
+      }
+    } catch (e) {
+      console.warn('pushInsSafe error', e);
+    }
+  }
+
+  // Initialize all current ins.adsbygoogle nodes (but do not double-push)
   async function initializeAdsOnce() {
     const ready = await waitForAdsByGoogle(5000);
-    const nodes = document.querySelectorAll('ins.adsbygoogle');
-
-    nodes.forEach((ins) => {
-      // don't push twice
-      if (ins._pushed) return;
-
-      // If iframe already present, mark pushed and skip
+    document.querySelectorAll('ins.adsbygoogle').forEach((ins) => {
+      // if ad already has iframe present, consider it handled (avoid re-push)
       const iframeNow = ins.querySelector('iframe') || (ins.parentElement && ins.parentElement.querySelector('iframe'));
       if (iframeNow) {
         ins._pushed = true;
         return;
       }
-
-      // If adsbygoogle is ready, push now. Otherwise schedule a retry.
-      if (ready) {
-        try {
-          (adsbygoogle = window.adsbygoogle || []).push({});
-          ins._pushed = true;
-        } catch (e) {
-          console.warn('ads push failed (initial):', e);
-          ins._pushed = false;
-        }
-      } else {
-        // retry after delay
-        setTimeout(() => {
-          try {
-            if (!ins._pushed && window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
-              (adsbygoogle = window.adsbygoogle || []).push({});
-              ins._pushed = true;
-            }
-          } catch (e) {
-            console.warn('ads push failed (retry):', e);
-          }
-        }, 2000);
+      if (ready) pushInsSafe(ins);
+      else {
+        // try after small delay
+        setTimeout(() => pushInsSafe(ins), 1500);
       }
     });
   }
 
-  // Monitor ad slots and hide tiny/empty ones
-  function monitorAndHandleAdsImproved() {
-    // run after creatives likely loaded
-    setTimeout(() => {
-      document.querySelectorAll('ins.adsbygoogle').forEach((ins) => {
-        try {
-          const status = ins.getAttribute('data-ad-status'); // if present
-          const container = ins.closest('.ad-banner-horizontal, .ad-space, .ad-section-responsive, .ad-container');
+  // Hide tiny iframes and tiny containers to avoid blank holes
+  function hideTinyOrUnfilledSlots() {
+    document.querySelectorAll('ins.adsbygoogle').forEach((ins) => {
+      try {
+        const status = ins.getAttribute('data-ad-status');
+        const container = ins.closest('.ad-banner-horizontal, .ad-space, .ad-section-responsive, .ad-container') || ins.parentElement;
 
-          if (status === 'unfilled') {
-            // hide ad element to avoid blank space
-            ins.style.display = 'none';
-            if (container) container.style.minHeight = '0';
-            return;
-          }
-
-          // If iframe present, check its height
-          const iframe = ins.querySelector('iframe') || (container && container.querySelector('iframe'));
-          const height = iframe ? (iframe.offsetHeight || iframe.clientHeight || 0) : 0;
-          if (height < 50) {
-            // Tiny — likely no creative
-            ins.style.display = 'none';
-            if (container) container.style.minHeight = '0';
-          } else {
-            ins.style.display = 'block';
-          }
-        } catch (e) {
-          console.warn('monitor error for ad slot', e);
+        // If publisher library sets explicit 'unfilled', hide
+        if (status === 'unfilled') {
+          ins.style.display = 'none';
+          if (container) container.style.minHeight = '0';
+          return;
         }
-      });
-    }, UNFILLED_TIMEOUT);
+
+        // Check iframe height
+        const iframe = ins.querySelector('iframe') || (container && container.querySelector('iframe'));
+        const height = iframe ? (iframe.offsetHeight || iframe.clientHeight || 0) : 0;
+
+        if (height < MIN_FRAME_HEIGHT) {
+          ins.style.display = 'none';
+          if (container) container.style.minHeight = '0';
+        } else {
+          ins.style.display = 'block';
+        }
+      } catch (e) {
+        // non-fatal
+        console.warn('hideTinyOrUnfilledSlots error', e);
+      }
+    });
   }
 
-  // Lazy init for in-content ads: when element enters viewport, push if not pushed
-  function setupLazyForInsertedAds() {
+  // Setup lazy-init using IntersectionObserver for banners that are dynamically inserted
+  function setupLazyForBanners() {
     if (!('IntersectionObserver' in window)) return;
-    const options = { threshold: 0.2 };
+    const observerOptions = { threshold: 0.25 };
 
-    document.querySelectorAll('.ad-banner-horizontal').forEach((banner) => {
-      // Only observe banners that contain ins.adsbygoogle and are not already handled
+    document.querySelectorAll('.ad-banner-horizontal, .ad-section-responsive, .ad-space').forEach((banner) => {
       const ins = banner.querySelector('ins.adsbygoogle');
-      if (!ins || ins._observerAttached) return;
+      if (!ins || ins._observerAttached || ins._pushed) return;
 
-      const obs = new IntersectionObserver((entries, observer) => {
-        entries.forEach((entry) => {
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
           if (entry.isIntersecting) {
-            // push safely
-            if (!ins._pushed && window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
-              try {
-                (adsbygoogle = window.adsbygoogle || []).push({});
-                ins._pushed = true;
-              } catch (e) {
-                console.warn('lazy push failed', e);
+            pushInsSafe(ins);
+            // once pushed, wait a bit and then check iframe size
+            setTimeout(() => {
+              const iframe = ins.querySelector('iframe') || banner.querySelector('iframe');
+              const h = iframe ? (iframe.offsetHeight || iframe.clientHeight || 0) : 0;
+              if (h < MIN_FRAME_HEIGHT) {
+                ins.style.display = 'none';
+                banner.style.minHeight = '0';
+              } else {
+                ins.style.display = 'block';
               }
-            }
-            observer.unobserve(entry.target);
+            }, UNFILLED_TIMEOUT);
+            obs.unobserve(entry.target);
           }
         });
-      }, options);
+      }, observerOptions);
 
-      obs.observe(banner);
+      observer.observe(banner);
       ins._observerAttached = true;
     });
   }
 
-  // Combined "safe init" function to call from the page
+  // Monitor/cleanup function to detect unfilled/tiny slots after ad creatives had time to arrive
+  function monitorAndHandleAdsImproved() {
+    setTimeout(() => {
+      hideTinyOrUnfilledSlots();
+    }, UNFILLED_TIMEOUT);
+  }
+
+  // One-combined helper to call from page after dynamic insertion
   async function safeInitAndMonitor() {
     await initializeAdsOnce();
-    setupLazyForInsertedAds();
+    setupLazyForBanners();
     monitorAndHandleAdsImproved();
   }
 
-  // Expose globally for page scripts to call after dynamic insertion
+  // Debug helper
+  function debugAdSlots() {
+    document.querySelectorAll('ins.adsbygoogle').forEach((ins, i) => {
+      const iframe = ins.querySelector('iframe') || (ins.parentElement && ins.parentElement.querySelector('iframe'));
+      console.log({
+        index: i,
+        slot: ins.getAttribute('data-ad-slot'),
+        status: ins.getAttribute('data-ad-status'),
+        pushed: !!ins._pushed,
+        pushedAt: ins._pushedAt,
+        hasIframe: !!iframe,
+        iframeRect: iframe ? iframe.getBoundingClientRect() : null
+      });
+    });
+  }
+
+  // Expose API
   window.adsHelper = {
     safeInitAndMonitor,
     initializeAdsOnce,
+    setupLazyForBanners,
     monitorAndHandleAdsImproved,
-    setupLazyForInsertedAds
+    debugAdSlots
   };
 
-  // Auto-run after DOMContentLoaded (non-blocking)
+  // Auto-run once DOM is ready (non-blocking)
   document.addEventListener('DOMContentLoaded', () => {
-    // small delay to let content insertion code run first
+    // small delay so any dynamic markup added on DOMContentLoaded can run
     setTimeout(() => {
       safeInitAndMonitor();
     }, 600);
   });
 
+  // Observe DOM for new ad banners inserted dynamically (so we can attach lazy init)
+  const mo = new MutationObserver((mutations) => {
+    let found = false;
+    for (const m of mutations) {
+      if (m.addedNodes && m.addedNodes.length) {
+        m.addedNodes.forEach(node => {
+          if (node.nodeType === 1 && (node.matches && (node.matches('.ad-banner-horizontal') || node.matches('.ad-section-responsive') || node.matches('.ad-space')))) {
+            found = true;
+          } else if (node.querySelectorAll && node.querySelectorAll('ins.adsbygoogle').length) {
+            found = true;
+          }
+        });
+      }
+    }
+    if (found) {
+      // re-run lazy setup & monitor for newly added slots
+      setTimeout(() => {
+        setupLazyForBanners();
+        monitorAndHandleAdsImproved();
+      }, 300);
+    }
+  });
+
+  mo.observe(document.documentElement || document.body, { childList: true, subtree: true });
 })();
