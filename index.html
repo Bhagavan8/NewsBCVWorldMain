@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<<<<<<< HEAD
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News Portal - FIXED ADS</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- AdSense (client only here) -->
+  <script async 
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659"
+          crossorigin="anonymous"></script>
+
+  <style>
+    body { margin:0; font-family:Inter, sans-serif; background:#f8f9fa; }
+    header { background:#fff; border-bottom:1px solid #eee; position:sticky; top:0; z-index:100; }
+    .wrap { max-width:1080px; margin:auto; padding:0 16px; }
+    .header-inner { display:flex; justify-content:space-between; align-items:center; height:64px; }
+    nav a { margin-left:16px; text-decoration:none; color:#000; }
+
+    main { padding:24px 0; }
+    .grid { display:grid; grid-template-columns:220px 1fr 220px; gap:16px; }
+
+    @media(max-width:992px){ .grid{ grid-template-columns:1fr;} .sidebar{ display:none;} }
+
+    .card { background:#fff; border:1px solid #eee; border-radius:10px; overflow:hidden; }
+    .list { display:grid; grid-template-columns:1fr 1fr; gap:16px; padding:16px; }
+    @media(max-width:768px){ .list{ grid-template-columns:1fr;} }
+
+    .news-item { background:#fff; padding:16px; border:1px solid #eee; border-radius:10px; }
+
+    footer { background:#fff; border-top:1px solid #eee; margin-top:24px; }
+    .footer-inner { display:flex; justify-content:space-between; padding:20px 0; }
+
+    /* Ad boxes */
+    .ad-box { background:#fff; border:1px dashed #ccc; padding:12px; border-radius:10px; margin:16px 0; }
+    .adsbygoogle { display:block !important; min-height:90px; }
+    .sidebar .adsbygoogle { min-height:250px; }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="wrap header-inner">
+    <a class="brand" href="#">News Portal</a>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Latest</a>
+      <a href="#">Categories</a>
+      <a href="#">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- TOP ad -->
+  <div class="ad-box">
+    <ins class="adsbygoogle"
+         data-adtest="on"
+         data-ad-slot="8937427990"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+  </div>
+
+  <div class="grid">
+
+    <!-- LEFT sidebar ad -->
+    <aside class="sidebar">
+      <div class="ad-box">
+        <ins class="adsbygoogle"
+             data-adtest="on"
+             data-ad-slot="8322366235"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+      </div>
+    </aside>
+
+    <section>
+      <div class="card">
+        <h3 style="padding:16px;">Top Stories</h3>
+
+        <div class="ad-box">
+          <ins class="adsbygoogle"
+               data-adtest="on"
+               data-ad-slot="8774502816"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+        </div>
+
+        <div class="list">
+          <div class="news-item"><h4>Sample Headline One</h4><p>Short intro text...</p></div>
+          <div class="news-item"><h4>Sample Headline Two</h4><p>Short intro text...</p></div>
+          <div class="news-item"><h4>Sample Headline Three</h4><p>Short intro text...</p></div>
+          <div class="news-item"><h4>Sample Headline Four</h4><p>Short intro text...</p></div>
+        </div>
+
+        <div class="ad-box">
+          <ins class="adsbygoogle"
+               data-adtest="on"
+               data-ad-slot="6795206732"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- RIGHT sidebar ad -->
+    <aside class="sidebar">
+      <div class="ad-box">
+        <ins class="adsbygoogle"
+             data-adtest="on"
+             data-ad-slot="1142698459"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- Bottom ad -->
+  <div class="ad-box">
+    <ins class="adsbygoogle"
+         data-adtest="on"
+         data-ad-slot="6566431435"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap footer-inner">
+    <div>&copy; <span id="year"></span> News Portal</div>
+    <div><a href="#">Privacy</a> • <a href="#">Terms</a></div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // SINGLE push initializer (no duplicates, no errors)
+  function initAds() {
+    document.querySelectorAll("ins.adsbygoogle").forEach(el => {
+      if (!el.dataset.loaded) {
+        try {
+          (adsbygoogle = window.adsbygoogle || []).push({});
+          el.dataset.loaded = "true";
+        } catch (e) {}
+      }
+    });
+  }
+
+  window.addEventListener("load", () => {
+    setTimeout(initAds, 500);
+  });
+</script>
+
+</body>
+=======
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Portal - Latest News & Fresher Jobs | Experience Jobs | Breaking News, Analysis & More</title>
+
+    <!-- Critical Preconnects -->
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://firebasestorage.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
+
+    <!-- Critical CSS Preloads -->
+    <link rel="preload" href="css/critical.css" as="style">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Lora:wght@400;500;600&display=swap"
+        media="print" onload="this.media='all'" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css"
+        media="print" onload="this.media='all'" crossorigin>
+
+    <!-- Critical CSS -->
+    <link rel="stylesheet" href="css/critical.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Deferred CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css"
+        media="print" onload="this.media='all'">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Lora:wght@400;500;600&display=swap"
+        media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" media="print"
+        onload="this.media='all'">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css" media="print"
+        onload="this.media='all'">
+    <link rel="stylesheet" href="/css/social-share.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="css/news-sections.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="/css/loader.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="css/banners.css" media="print" onload="this.media='all'">
+
+    <!-- Fallback for CSS -->
+    <noscript>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Lora:wght@400;500;600&display=swap">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css">
+        <link rel="stylesheet" href="/css/social-share.css">
+        <link rel="stylesheet" href="css/news-sections.css">
+        <link rel="stylesheet" href="/css/loader.css">
+        <link rel="stylesheet" href="css/banners.css">
+        <link rel="stylesheet" href="css/stylesfix.css">
+    </noscript>
+
+    <!-- Meta Tags -->
+    <meta name="description"
+        content="Latest news, breaking news, headlines from India and around the world. Get real-time updates on politics, technology, entertainment, sports, and more.">
+    <meta name="keywords"
+        content="news, breaking news, latest news, india news, world news, politics, technology, entertainment, sports">
+    <meta name="author" content="News Portal">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.webp">
+    <link rel="manifest" href="site.webmanifest">
+
+    <!-- Social Media Meta Tags -->
+    <meta property="og:title" content="News Portal - Latest News & Updates">
+    <meta property="og:description"
+        content="Stay updated with the latest news from around the world. Breaking news, analysis, and in-depth coverage of current events.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="assets/images/og-image.jpg">
+    <meta property="og:url" content="https://bcvworld.com">
+    <meta property="og:site_name" content="News Portal">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="News Portal - Latest News & Updates">
+    <meta name="twitter:description"
+        content="Stay updated with the latest news from around the world. Breaking news, analysis, and in-depth coverage of current events.">
+    <meta name="twitter:image" content="assets/images/twitter-image.jpg">
+
+    <!-- Mobile App Meta -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="News Portal">
+    <meta name="theme-color" content="#ffffff">
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YEJYBRRRL7"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-YEJYBRRRL7');
+    </script>
+    
+    <!-- Google Tag Manager -->
+    <script>(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-PJ53H9H5');</script>
+    <!-- End Google Tag Manager -->
+    
+    <!-- AdSense Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659" crossorigin="anonymous"></script>
+    <script>
+        function initAdsOnce() {
+            var ads = document.querySelectorAll('ins.adsbygoogle');
+            ads.forEach(function(ad){
+                try {
+                    if (ad.getAttribute('data-init') === 'true') return;
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                    ad.setAttribute('data-init', 'true');
+                } catch (e) {}
+            });
+        }
+        document.addEventListener('DOMContentLoaded', function(){ setTimeout(initAdsOnce, 1000); });
+        window.addEventListener('load', function(){ setTimeout(initAdsOnce, 1500); });
+        (function(){
+            var observer = new MutationObserver(function(mutations){
+                mutations.forEach(function(m){
+                    m.addedNodes.forEach(function(node){
+                        if (node.nodeType === 1) {
+                            if (node.matches && node.matches('ins.adsbygoogle')) {
+                                try {
+                                    if (node.getAttribute('data-init') !== 'true') {
+                                        (adsbygoogle = window.adsbygoogle || []).push({});
+                                        node.setAttribute('data-init', 'true');
+                                    }
+                                } catch (e) {}
+                            }
+                            var nested = node.querySelectorAll ? node.querySelectorAll('ins.adsbygoogle') : [];
+                            nested.forEach(function(el){
+                                try {
+                                    if (el.getAttribute('data-init') !== 'true') {
+                                        (adsbygoogle = window.adsbygoogle || []).push({});
+                                        el.setAttribute('data-init', 'true');
+                                    }
+                                } catch (e) {}
+                            });
+                        }
+                    });
+                });
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+        })();
+    </script>
+</head>
+
+<body>
+    <div id="top-bar-container">
+        <div class="top-bar-skeleton">
+            <div class="container">
+                <div class="top-bar-content d-flex justify-content-between">
+                    <div class="skeleton-left"></div>
+                    <div class="skeleton-right"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="header-container"></div>
+    <div id="navigation-container"></div>
+    
+    <main class="container-fluid py-4">
+        <section class="breaking-news-section mb-4">
+            <div class="row">
+                <!-- Mobile Ad Banner - FIXED -->
+                <div class="col-12 d-block d-lg-none mb-3">
+                    <div class="ad-banner-horizontal" id="mobile-ad-banner">
+                        <div class="ad-container">
+                            <ins class="adsbygoogle"
+                                 style="display:block;"
+                                 data-ad-client="ca-pub-6284022198338659"
+                                 data-ad-slot="8937427990"
+                                 data-ad-format="auto"
+                                 data-full-width-responsive="true"></ins>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Left Ad Space - FIXED -->
+                <div class="col-lg-2 d-none d-lg-block">
+                    <div class="ad-space sticky-top" style="top: 100px;" id="left-sidebar-ad">
+                        <div class="ad-container">
+                            <ins class="adsbygoogle"
+                                 style="display:block;"
+                                 data-ad-client="ca-pub-6284022198338659"
+                                 data-ad-slot="8322366235"
+                                 data-ad-format="auto"
+                                 data-full-width-responsive="true"></ins>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="col-lg-8">
+                    <h2 class="section-title mb-4">Breaking News</h2>
+                    <div class="row">
+                        <div class="col-12 mb-4">
+                            <div class="main-breaking-news" id="mainBreakingNews">
+                                <div class="breaking-news-placeholder" style="min-height: 200px;">
+                                    <!-- Content will be loaded dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="secondary-breaking-news" id="secondaryBreakingNews1">
+                                <!-- Content will be loaded dynamically -->
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="secondary-breaking-news" id="secondaryBreakingNews2">
+                                <!-- Content will be loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Ad Space - FIXED -->
+                <div class="col-lg-2 d-none d-lg-block">
+                    <div class="ad-space sticky-top" style="top: 100px;" id="right-sidebar-ad">
+                        <div class="ad-container">
+                            <ins class="adsbygoogle"
+                                 style="display:block;"
+                                 data-ad-client="ca-pub-6284022198338659"
+                                 data-ad-slot="1142698459"
+                                 data-ad-format="auto"
+                                 data-full-width-responsive="true"></ins>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="news-categories-section">
+            <div class="row">
+                <!-- Left Ad Space - FIXED -->
+                <div class="col-lg-2 d-none d-lg-block">
+                    <div class="ad-space sticky-top" style="top: 100px;" id="left-sidebar-ad-2">
+                        <div class="ad-container">
+                            <ins class="adsbygoogle"
+                                 style="display:block;"
+                                 data-ad-client="ca-pub-6284022198338659"
+                                 data-ad-slot="1634503107"
+                                 data-ad-format="auto"
+                                 data-full-width-responsive="true"></ins>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="col-lg-8">
+                    <!-- General News Section -->
+                    <div class="category-section mb-5" id="generalNews">
+                        <div class="section-header d-flex justify-content-between align-items-center mb-4">
+                            <h2 class="section-title">General News</h2>
+                            <a href="category.html?category=general" class="view-all">View All <i
+                                    class="bi bi-arrow-right"></i></a>
+                        </div>
+                        <div class="news-section-grid" id="generalNewsGrid"></div>
+                    </div>
+
+                    <!-- Ad Banner 1 - FIXED -->
+                    <div class="ad-banner-horizontal mb-5" id="horizontal-ad-1">
+                        <div class="ad-container">
+                            <ins class="adsbygoogle"
+                                 style="display:block;"
+                                 data-ad-client="ca-pub-6284022198338659"
+                                 data-ad-slot="8774502816"
+                                 data-ad-format="auto"
+                                 data-full-width-responsive="true"></ins>
+                        </div>
+                    </div>
+
+                    <!-- Featured News Section -->
+                    <div class="category-section mb-5" id="featuredNews">
+                        <div class="section-header d-flex justify-content-between align-items-center mb-4">
+                            <h2 class="section-title">Featured</h2>
+                            <a href="category.html?category=featured" class="view-all">View All <i
+                                    class="bi bi-arrow-right"></i></a>
+                        </div>
+                        <div class="news-section-grid" id="featuredNewsSlider"></div>
+                    </div>
+                    
+                    <!-- Ad Banner 2 - FIXED -->
+                    <div class="ad-banner-horizontal mb-5" id="horizontal-ad-2">
+                        <div class="ad-container">
+                            <ins class="adsbygoogle"
+                                 style="display:block;"
+                                 data-ad-client="ca-pub-6284022198338659"
+                                 data-ad-slot="6795206732"
+                                 data-ad-format="auto"
+                                 data-full-width-responsive="true"></ins>
+                        </div>
+                    </div>
+
+                    <!-- Recent News Section -->
+                    <div class="category-section mb-5" id="recentNews">
+                        <div class="section-header d-flex justify-content-between align-items-center mb-4">
+                            <h2 class="section-title">Recent Updates</h2>
+                            <a href="category.html?category=recent" class="view-all">View All <i
+                                    class="bi bi-arrow-right"></i></a>
+                        </div>
+                        <div class="news-section-grid" id="recentNewsList"></div>
+                    </div>
+                    
+                    <!-- Ad Banner 3 - FIXED -->
+                    <div class="ad-banner-horizontal mb-5" id="horizontal-ad-3">
+                        <div class="ad-container">
+                            <ins class="adsbygoogle"
+                                 style="display:block;"
+                                 data-ad-client="ca-pub-6284022198338659"
+                                 data-ad-slot="6566431435"
+                                 data-ad-format="auto"
+                                 data-full-width-responsive="true"></ins>
+                        </div>
+                    </div>
+
+                    <!-- Entertainment Section -->
+                    <div class="category-section mb-5" id="entertainmentNews">
+                        <div class="section-header d-flex justify-content-between align-items-center mb-4">
+                            <h2 class="section-title">Entertainment</h2>
+                            <a href="category.html?category=entertainment" class="view-all">View All <i
+                                    class="bi bi-arrow-right"></i></a>
+                        </div>
+                        <div class="news-section-grid" id="entertainmentGrid"></div>
+                    </div>
+                    
+                    <!-- Ad Banner 4 - FIXED -->
+                    <div class="ad-banner-horizontal mb-5" id="horizontal-ad-4">
+                        <div class="ad-container">
+                            <ins class="adsbygoogle"
+                                 style="display:block;"
+                                 data-ad-client="ca-pub-6284022198338659"
+                                 data-ad-slot="5253349765"
+                                 data-ad-format="auto"
+                                 data-full-width-responsive="true"></ins>
+                        </div>
+                    </div>
+
+                    <!-- Tips & Tricks Section -->
+                    <div class="category-section mb-5" id="tipsSection">
+                        <div class="section-header d-flex justify-content-between align-items-center mb-4">
+                            <h2 class="section-title">Tips & Tricks</h2>
+                            <a href="category.html?category=tips" class="view-all">View All <i
+                                    class="bi bi-arrow-right"></i></a>
+                        </div>
+                        <div class="news-section-grid" id="tipsGrid"></div>
+                    </div>
+                    
+                    <!-- Ad Banner 5 - FIXED -->
+                    <div class="ad-banner-horizontal mb-5" id="horizontal-ad-5">
+                        <div class="ad-container">
+                            <ins class="adsbygoogle"
+                                 style="display:block;"
+                                 data-ad-client="ca-pub-6284022198338659"
+                                 data-ad-slot="7879497198"
+                                 data-ad-format="auto"
+                                 data-full-width-responsive="true"></ins>
+                        </div>
+                    </div>
+
+                    <!-- Story Telling Section -->
+                    <div class="category-section mb-5" id="storiesSection">
+                        <div class="section-header d-flex justify-content-between align-items-center mb-4">
+                            <h2 class="section-title">Stories</h2>
+                            <a href="category.html?category=stories" class="view-all">View All <i
+                                    class="bi bi-arrow-right"></i></a>
+                        </div>
+                        <div class="news-section-grid" id="storiesGrid"></div>
+                    </div>
+                    
+                    <!-- Ad Banner 6 - FIXED -->
+                    <div class="ad-banner-horizontal mb-5" id="horizontal-ad-6">
+                        <div class="ad-container">
+                            <ins class="adsbygoogle"
+                                 style="display:block;"
+                                 data-ad-client="ca-pub-6284022198338659"
+                                 data-ad-slot="4169043397"
+                                 data-ad-format="auto"
+                                 data-full-width-responsive="true"></ins>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Ad Space - FIXED -->
+                <div class="col-lg-2 d-none d-lg-block">
+                    <div class="ad-space sticky-top" style="top: 100px;" id="right-sidebar-ad-2">
+                        <div class="ad-container">
+                            <ins class="adsbygoogle"
+                                 style="display:block;"
+                                 data-ad-client="ca-pub-6284022198338659"
+                                 data-ad-slot="6119692964"
+                                 data-ad-format="auto"
+                                 data-full-width-responsive="true"></ins>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="job-banner" id="jobBanner"></div>
+            </div>
+        </section>
+    </main>
+
+    <div class="notification-container"></div>
+    <div id="footer-container"></div>
+
+    <!-- Critical Scripts - Load First -->
+    <script async src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+    <script async src="https://code.jquery.com/jquery-3.7.1.min.js"
+        onload="if(window.jQuery)jQuery.noConflict();"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Firebase Core - Load Early -->
+    <script async type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    </script>
+
+    <script type="module">
+        // Add this to your news-sections.js
+        function createImageElement(src, alt) {
+            return `
+                <picture class="image-aspect-ratio">
+                    <source srcset="${src.replace('.jpg', '.webp')}" type="image/webp">
+                    <source srcset="${src.replace('.jpg', '.avif')}" type="image/avif">
+                    <img src="${src}" 
+                         alt="${alt}" 
+                         loading="lazy" 
+                         decoding="async" 
+                         width="800" 
+                         height="450" 
+                         style="object-fit: cover; width: 100%; height: 100%;">
+                </picture>
+            `;
+        }
+    </script>
+
+    <!-- Non-critical third party scripts -->
+    <script defer src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+
+    <!-- Application Scripts - Load Last -->
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/components/auth.js"></script>
+    <script type="module" src="js/common.js"></script>
+    <script defer src="js/loader.js"></script>
+    <script type="module" src="js/components/top-bar.js"></script>
+    <script type="module" src="js/components/component-loader.js"></script>
+    <script type="module" src="js/news-sections.js"></script>
+    <script type="module" src="js/banners.js"></script>
+    <script type="module" src="js/social-share.js"></script>
+    
+    <!-- Final AdSense Initialization -->
+    <script>
+        // Final ad initialization after all content loaded
+        window.addEventListener('load', function() {
+            console.log('Page fully loaded, finalizing ad initialization...');
+            
+            setTimeout(function() {
+                try {
+                    // Force refresh all ads
+                    if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
+                        window.adsbygoogle.forEach(function(adBlock, index) {
+                            try {
+                                if (adBlock && typeof adBlock.refresh === 'function') {
+                                    adBlock.refresh();
+                                    console.log('Refreshed ad block ' + index);
+                                }
+                            } catch (e) {
+                                console.log('Could not refresh ad block ' + index, e);
+                            }
+                        });
+                    }
+                    
+                    // Additional push for safety
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                    
+                } catch (error) {
+                    console.error('Final ad initialization error:', error);
+                }
+            }, 2000);
+        });
+
+        // Debug function to check ad status
+        function checkAdStatus() {
+            console.log('=== AD STATUS CHECK ===');
+            var ads = document.querySelectorAll('ins.adsbygoogle');
+            console.log('Total ad units found: ' + ads.length);
+            
+            ads.forEach(function(ad, index) {
+                var rect = ad.getBoundingClientRect();
+                var isVisible = rect.width > 0 && rect.height > 0;
+                var slot = ad.getAttribute('data-ad-slot');
+                console.log('Ad ' + (index + 1) + ' (Slot: ' + slot + '): ' + 
+                          'Visible: ' + isVisible + 
+                          ', Size: ' + Math.round(rect.width) + 'x' + Math.round(rect.height) +
+                          ', InViewport: ' + (rect.top < window.innerHeight && rect.bottom > 0));
+            });
+        }
+
+        // Run status check
+        setTimeout(checkAdStatus, 3000);
+    </script>
+</body>
+
+>>>>>>> 7f09936 (Initial commit)
+</html>
