@@ -114,45 +114,99 @@
     <!-- AdSense Script -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659" crossorigin="anonymous"></script>
     <script>
-        function initAdsOnce() {
-            var ads = document.querySelectorAll('ins.adsbygoogle');
-            ads.forEach(function(ad){
-                try {
-                    if (ad.getAttribute('data-init') === 'true') return;
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                    ad.setAttribute('data-init', 'true');
-                } catch (e) {}
-            });
-        }
-        document.addEventListener('DOMContentLoaded', function(){ setTimeout(initAdsOnce, 1000); });
-        window.addEventListener('load', function(){ setTimeout(initAdsOnce, 1500); });
+        /*
+         * Replaced multiple conflicting ad initializers with a single idempotent initializer.
+         * This function will initialize all <ins class="adsbygoogle"> nodes once, will mark
+         * data-init attribute to avoid double-initialization, and will mark unfilled slots
+         * (no iframe injected after a short delay) with .ad-unfilled for graceful fallback.
+         */
         (function(){
-            var observer = new MutationObserver(function(mutations){
-                mutations.forEach(function(m){
-                    m.addedNodes.forEach(function(node){
-                        if (node.nodeType === 1) {
-                            if (node.matches && node.matches('ins.adsbygoogle')) {
-                                try {
-                                    if (node.getAttribute('data-init') !== 'true') {
-                                        (adsbygoogle = window.adsbygoogle || []).push({});
-                                        node.setAttribute('data-init', 'true');
-                                    }
-                                } catch (e) {}
+            function initSingleAds() {
+                try {
+                    window.adsbygoogle = window.adsbygoogle || [];
+                } catch (e) {
+                    window.adsbygoogle = [];
+                }
+
+                var ads = document.querySelectorAll('ins.adsbygoogle');
+                ads.forEach(function(ad){
+                    try {
+                        if (ad.getAttribute('data-init') === 'true') return;
+
+                        // If script not ready, skip — caller will retry
+                        if (!window.adsbygoogle || typeof window.adsbygoogle.push !== 'function') return;
+
+                        // Push to adsbygoogle to request slot render
+                        window.adsbygoogle.push({});
+                        ad.setAttribute('data-init', 'true');
+
+                        // After a short delay, check whether an iframe was injected
+                        setTimeout(function(){
+                            if (!ad.querySelector('iframe')) {
+                                ad.classList.add('ad-unfilled');
+                            } else {
+                                ad.classList.remove('ad-unfilled');
                             }
-                            var nested = node.querySelectorAll ? node.querySelectorAll('ins.adsbygoogle') : [];
-                            nested.forEach(function(el){
-                                try {
-                                    if (el.getAttribute('data-init') !== 'true') {
-                                        (adsbygoogle = window.adsbygoogle || []).push({});
-                                        el.setAttribute('data-init', 'true');
-                                    }
-                                } catch (e) {}
-                            });
+                        }, 1400);
+                    } catch (e) {
+                        console.warn('initSingleAds per-ad error', e);
+                    }
+                });
+            }
+
+            // Retry helper: waits for adsbygoogle lib to be ready then calls init
+            function waitForLibAndInit(timeoutMs) {
+                var start = Date.now();
+                timeoutMs = timeoutMs || 7000;
+                (function poll(){
+                    if (window.adsbygoogle && typeof window.adsbygoogle.push === 'function') {
+                        initSingleAds();
+                    } else if (Date.now() - start < timeoutMs) {
+                        setTimeout(poll, 250);
+                    } else {
+                        // final attempt regardless
+                        initSingleAds();
+                    }
+                })();
+            }
+
+            // Single entry points
+            document.addEventListener('DOMContentLoaded', function(){ waitForLibAndInit(7000); });
+            window.addEventListener('load', function(){ waitForLibAndInit(3000); });
+
+            // MutationObserver watches for dynamically inserted ad nodes
+            var mo = new MutationObserver(function(mutations){
+                var found = false;
+                mutations.forEach(function(m){
+                    m.addedNodes.forEach(function(n){
+                        if (n.nodeType === 1) {
+                            if (n.matches && n.matches('ins.adsbygoogle')) found = true;
+                            if (n.querySelectorAll && n.querySelectorAll('ins.adsbygoogle').length) found = true;
                         }
                     });
                 });
+                if (found) {
+                    // Debounce short to allow multiple mutations to settle
+                    clearTimeout(window.__adInitDebounce);
+                    window.__adInitDebounce = setTimeout(function(){ waitForLibAndInit(3000); }, 150);
+                }
             });
-            observer.observe(document.body, { childList: true, subtree: true });
+            try { mo.observe(document.body, { childList: true, subtree: true }); } catch(e) {}
+
+            // Expose a simple diagnostics helper (call from console)
+            window.__adsDiagnostics = function(){
+                var list = [];
+                document.querySelectorAll('ins.adsbygoogle').forEach(function(ad){
+                    list.push({
+                        slot: ad.getAttribute('data-ad-slot') || null,
+                        inited: ad.getAttribute('data-init') === 'true',
+                        hasIframe: !!ad.querySelector('iframe'),
+                        rect: ad.getBoundingClientRect ? ad.getBoundingClientRect().toJSON() : null
+                    });
+                });
+                console.table(list);
+                return list;
+            };
         })();
     </script>
 </head>
@@ -465,55 +519,33 @@
     <script type="module" src="js/banners.js"></script>
     <script type="module" src="js/social-share.js"></script>
     
-    <!-- Final AdSense Initialization -->
+    <!-- Final AdSense Initialization (safety push) -->
     <script>
-        // Final ad initialization after all content loaded
+        // Small safety push after load to help render any remaining slots.
         window.addEventListener('load', function() {
-            console.log('Page fully loaded, finalizing ad initialization...');
-            
             setTimeout(function() {
                 try {
-                    // Force refresh all ads
-                    if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
-                        window.adsbygoogle.forEach(function(adBlock, index) {
-                            try {
-                                if (adBlock && typeof adBlock.refresh === 'function') {
-                                    adBlock.refresh();
-                                    console.log('Refreshed ad block ' + index);
-                                }
-                            } catch (e) {
-                                console.log('Could not refresh ad block ' + index, e);
-                            }
-                        });
-                    }
-                    
-                    // Additional push for safety
                     (adsbygoogle = window.adsbygoogle || []).push({});
-                    
-                } catch (error) {
-                    console.error('Final ad initialization error:', error);
-                }
-            }, 2000);
+                } catch (e) {}
+            }, 1500);
         });
 
-        // Debug function to check ad status
+        // Simple diagnostic check (call from console)
         function checkAdStatus() {
             console.log('=== AD STATUS CHECK ===');
             var ads = document.querySelectorAll('ins.adsbygoogle');
             console.log('Total ad units found: ' + ads.length);
-            
             ads.forEach(function(ad, index) {
                 var rect = ad.getBoundingClientRect();
                 var isVisible = rect.width > 0 && rect.height > 0;
                 var slot = ad.getAttribute('data-ad-slot');
                 console.log('Ad ' + (index + 1) + ' (Slot: ' + slot + '): ' + 
-                          'Visible: ' + isVisible + 
+                          'Visible: ' + isVisible +
                           ', Size: ' + Math.round(rect.width) + 'x' + Math.round(rect.height) +
                           ', InViewport: ' + (rect.top < window.innerHeight && rect.bottom > 0));
             });
         }
 
-        // Run status check
         setTimeout(checkAdStatus, 3000);
     </script>
 </body>
