@@ -239,14 +239,6 @@ function displayNewsDetail(newsData) {
                              data-ad-slot="6412063350" 
                              data-ad-format="auto" 
                              data-full-width-responsive="true"></ins>
-                        <!-- Backup content for unfilled ads -->
-                        <div class="ad-backup-content" style="display: none;">
-                            <div class="sponsored-content text-center p-3">
-                                <h6>📖 Continue Reading</h6>
-                                <p class="mb-2 small">More interesting content ahead</p>
-                                <a href="/discover" class="btn btn-sm btn-outline-primary">Discover More</a>
-                            </div>
-                        </div>
                     </div>
                 </div>`;
         }
