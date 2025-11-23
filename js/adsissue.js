@@ -1,60 +1,72 @@
 
-document.addEventListener('DOMContentLoaded', function () {
-  // Selector for each ad block that has an iframe and a backup element
-  document.querySelectorAll('.ad-space').forEach(function (adSpace) {
-    var backup = adSpace.querySelector('.ad-backup-content');
-    var iframe = adSpace.querySelector('iframe');
+(function(){
+  const UNFILLED_TIMEOUT = 3000; // ms to wait before showing backup
 
-    // If no iframe (unexpected), show backup immediately
-    if (!iframe) {
-      if (backup) backup.style.display = 'block';
-      return;
+  function showBackupFor(adIns) {
+    const container = adIns.closest('.ad-banner-horizontal, .ad-space, .ad-container');
+    if (!container) return;
+    const backup = container.querySelector('.ad-backup-content');
+    if (backup) {
+      adIns.style.display = 'none';
+      backup.style.display = 'block';
+      backup.setAttribute('aria-hidden','false');
     }
+  }
 
-    // Timeout after which we consider ad unfilled (adjust ms as needed)
-    var UNFILLED_TIMEOUT = 2500;
-
-    var checked = false;
-    function showBackup() {
-      if (checked) return;
-      checked = true;
-      if (backup) backup.style.display = 'block';
-      // optionally hide iframe/container to avoid blank space
-      // adSpace.style.display = 'block';
-    }
-
-    // On load of iframe, do a quick check
-    iframe.addEventListener('load', function () {
-      try {
-        // Heuristic: check iframe height and bounding box
-        var h = iframe.offsetHeight || iframe.clientHeight;
-        if (!h || h < 50) {
-          showBackup();
-        } else {
-          // also check if the iframe contains about:blank or an empty src
-          var src = iframe.getAttribute('src') || '';
-          if (src.indexOf('pagead/ads') === -1 || src.indexOf('empty') !== -1) {
-            showBackup();
-          } else {
-            // Looks like an ad was loaded. hide backup if visible.
+  function checkAd(adIns) {
+    try {
+      // If data-ad-status attribute is 'unfilled' show backup
+      const status = adIns.getAttribute('data-ad-status');
+      if (status === 'unfilled') {
+        showBackupFor(adIns);
+        return;
+      }
+      // If an iframe exists under this ad ins, check its height
+      const iframe = adIns.querySelector('iframe') || adIns.parentElement.querySelector('iframe');
+      if (iframe) {
+        const h = iframe.offsetHeight || iframe.clientHeight || 0;
+        if (h < 50) showBackupFor(adIns);
+        else {
+          // hide backup if any
+          const container = adIns.closest('.ad-banner-horizontal, .ad-space, .ad-container');
+          if (container) {
+            const backup = container.querySelector('.ad-backup-content');
             if (backup) backup.style.display = 'none';
+            adIns.style.display = 'block';
           }
         }
-      } catch (e) {
-        // cross-origin frames can't be inspected; fall back to a conservative approach
-        // leave the iframe alone and hide backup, or show backup after timeout below
+      } else {
+        // no iframe -> likely unfilled
+        showBackupFor(adIns);
       }
-    }, {passive:true});
+    } catch (e) {
+      // cross-origin access may fail; rely on timeout fallback below
+      console.warn('ad check err', e);
+    }
+  }
 
-    // After timeout, if no visible creative, show backup
-    setTimeout(function () {
-      // If iframe still tiny or not showing, show backup
-      var h = iframe.offsetHeight || iframe.clientHeight;
-      if (!h || h < 50) showBackup();
-    }, UNFILLED_TIMEOUT);
+  // Run checks for all ads
+  function monitorAllAds() {
+    document.querySelectorAll('ins.adsbygoogle').forEach(adIns => {
+      // run a check after UNFILLED_TIMEOUT
+      setTimeout(() => checkAd(adIns), UNFILLED_TIMEOUT);
+      // also run a quick check on load
+      checkAd(adIns);
+    });
+  }
 
-    // Also reveal backup if iframe never loads (network error)
-    iframe.addEventListener('error', showBackup, {passive:true});
+  // Run after the page loads and whenever the adsbygoogle push completes
+  document.addEventListener('DOMContentLoaded', monitorAllAds);
+  window.addEventListener('load', function() {
+    setTimeout(monitorAllAds, 1000);
   });
-});
+
+  // export small debug helper
+  window.__showAdDebug = function(){
+    document.querySelectorAll('ins.adsbygoogle').forEach((ad, i) => {
+      console.log(i+1, 'slot', ad.getAttribute('data-ad-slot'), 'status', ad.getAttribute('data-ad-status'),
+                  'rect', ad.getBoundingClientRect(), 'hasIframe', !!ad.querySelector('iframe') || !!ad.parentElement.querySelector('iframe'));
+    });
+  };
+})();
 

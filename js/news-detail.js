@@ -71,14 +71,14 @@ function initializeAds() {
                 try {
                     if (unit.getAttribute('data-init') === 'true') return;
                     if (unit.innerHTML && unit.innerHTML.trim().length > 0) return;
-                    
+
                     // Ensure proper styling before initialization
                     unit.style.display = 'block';
                     unit.style.width = '100%';
                     unit.style.minHeight = '200px';
                     unit.style.visibility = 'visible';
                     unit.style.opacity = '1';
-                    
+
                     (adsbygoogle = window.adsbygoogle || []).push({});
                     unit.setAttribute('data-init', 'true');
                     console.log(`✅ Ad unit ${index + 1} initialized`);
@@ -124,7 +124,7 @@ function fixAdContainers() {
             ad.style.contain = 'none';
             ad.style.visibility = 'visible';
             ad.style.opacity = '1';
-            
+
             console.log(`✅ Fixed ad container ${index + 1}`);
         }
     });
@@ -135,12 +135,12 @@ function monitorAndHandleAds() {
     setTimeout(() => {
         const ads = document.querySelectorAll('ins.adsbygoogle');
         console.log(`🔍 Monitoring ${ads.length} ad units for status...`);
-        
+
         ads.forEach((ad) => {
             const status = ad.getAttribute('data-ad-status');
             const container = ad.closest('.ad-container, .ad-banner-horizontal');
             const backupContent = container ? container.querySelector('.ad-backup-content') : null;
-            
+
             if (status === 'unfilled' && backupContent) {
                 console.log(`❌ Ad unfilled, showing backup content for slot: ${ad.getAttribute('data-ad-slot')}`);
                 ad.style.display = 'none';
@@ -155,21 +155,21 @@ function monitorAndHandleAds() {
 async function incrementViewCount(newsId) {
     try {
         const isLoggedIn = auth.currentUser !== null;
-        
+
         if (!isLoggedIn) {
             const viewedNews = sessionStorage.getItem('viewedNews') || '';
             const viewedNewsArray = viewedNews.split(',');
-            
+
             if (viewedNewsArray.includes(newsId)) {
                 return;
             }
-            
+
             viewedNewsArray.push(newsId);
             sessionStorage.setItem('viewedNews', viewedNewsArray.join(','));
         } else {
             const userViewsRef = doc(db, 'userViews', auth.currentUser.uid);
             const userViewsDoc = await getDoc(userViewsRef);
-            
+
             if (!userViewsDoc.exists()) {
                 // Create the document if it doesn't exist
                 await setDoc(userViewsRef, {
@@ -239,6 +239,9 @@ function displayNewsDetail(newsData) {
                              data-ad-slot="6412063350" 
                              data-ad-format="auto" 
                              data-full-width-responsive="true"></ins>
+                             <script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
                     </div>
                 </div>`;
         }
@@ -319,8 +322,8 @@ async function loadLatestNews() {
         if (container && !snapshot.empty) {
             container.innerHTML = `
                 ${snapshot.docs.map(doc => {
-                    const news = doc.data();
-                    return `
+                const news = doc.data();
+                return `
                         <div class="latest-news-item mb-3 p-2 border-bottom">
                             <a href="news-detail.html?id=${doc.id}" class="text-decoration-none">
                                 <div class="d-flex align-items-start">
@@ -342,7 +345,7 @@ async function loadLatestNews() {
                                 </div>
                             </a>
                         </div>`;
-                }).join('')}`;
+            }).join('')}`;
         } else {
             container.innerHTML = `
                 <p class="text-muted">No recent news available</p>`;
@@ -419,9 +422,9 @@ async function loadCategoryNews(category) {
             container.innerHTML = `
                 <h5 class="mb-3">More from ${category.charAt(0).toUpperCase() + category.slice(1)}</h5>
                 ${snapshot.docs.map(doc => {
-                    const news = doc.data();
-                    
-                    return `
+                const news = doc.data();
+
+                return `
                         <div class="category-news-item mb-3">
                             <a href="news-detail.html?id=${doc.id}" class="text-decoration-none">
                                 <div class="d-flex align-items-center">
@@ -436,7 +439,7 @@ async function loadCategoryNews(category) {
                                 </div>
                             </a>
                         </div>`;
-                }).join('')}`;
+            }).join('')}`;
         }
     } catch (error) {
         console.error('Error loading category news:', error);
@@ -458,7 +461,7 @@ async function loadNewsDetail() {
 
         const docRef = doc(db, 'news', newsId);
         const docSnap = await getDoc(docRef);
-        
+
         if (!docSnap.exists()) {
             console.warn('News document not found');
             window.location.href = 'index.html';
