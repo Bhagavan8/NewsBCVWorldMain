@@ -132,6 +132,7 @@
                 ads.forEach(function(ad){
                     try {
                         if (ad.getAttribute('data-init') === 'true') return;
+                        if (ad.querySelector('iframe')) return;
 
                         // If script not ready, skip — caller will retry
                         if (!window.adsbygoogle || typeof window.adsbygoogle.push !== 'function') return;
@@ -188,10 +189,15 @@
                 if (found) {
                     // Debounce short to allow multiple mutations to settle
                     clearTimeout(window.__adInitDebounce);
-                    window.__adInitDebounce = setTimeout(function(){ waitForLibAndInit(3000); }, 150);
+                    window.__adInitDebounce = setTimeout(function(){ waitForLibAndInit(3000); }, 250);
                 }
             });
-            try { mo.observe(document.body, { childList: true, subtree: true }); } catch(e) {}
+            document.addEventListener('DOMContentLoaded', function(){
+                var target = document.body || document.documentElement;
+                if (target && (target.nodeType === 1 || target.nodeType === 9)) {
+                    try { mo.observe(target, { childList: true, subtree: true }); } catch(e) {}
+                }
+            });
 
             // Expose a simple diagnostics helper (call from console)
             window.__adsDiagnostics = function(){
