@@ -877,6 +877,137 @@
 .ad-box-job:empty+.ad-fallback {
     display: block;
 }
+/* ===== AD STYLES - FIXED VERSION ===== */
+
+/* Advertisement Spaces */
+.ad-space {
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 20px;
+    background: #f8f9fa !important;
+    border: 2px dashed #dee2e6 !important;
+    min-height: 100px;
+    width: 100%;
+    position: relative;
+    overflow: visible !important;
+    display: block !important;
+    visibility: visible !important;
+}
+
+.ad-banner-horizontal {
+    width: 100% !important;
+    text-align: center;
+    background: #f8f9fa !important;
+    border: 2px dashed #28a745 !important;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 20px 0;
+    min-height: 90px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: visible !important;
+    visibility: visible !important;
+}
+
+/* Critical: Ensure adsbygoogle containers are visible */
+.adsbygoogle {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background: transparent !important;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    min-height: 100px !important;
+}
+
+/* Specific fixes for different ad types */
+.ad-banner-horizontal .adsbygoogle {
+    display: block !important;
+    width: 100% !important;
+    min-height: 90px !important;
+}
+
+.ad-space .adsbygoogle {
+    display: block !important;
+    width: 100% !important;
+    min-height: 100px !important;
+}
+
+/* Ad container for proper sizing */
+.ad-container {
+    display: block !important;
+    position: relative;
+    overflow: visible !important;
+    background: transparent !important;
+    width: 100%;
+    height: auto;
+    min-height: 100px;
+}
+
+/* Ensure no containers block ads */
+.container-fluid,
+.news-categories-section,
+.breaking-news-section,
+.row,
+.col-lg-2,
+.col-lg-8,
+.col-12,
+main,
+section {
+    overflow: visible !important;
+}
+
+/* Remove any potential content containment */
+* {
+    contain: none !important;
+}
+
+/* Ad status indicators */
+ins.adsbygoogle[data-ad-status="unfilled"] {
+    background: #f8f9fa !important;
+    border: 1px dashed #6c757d !important;
+}
+
+ins.adsbygoogle[data-ad-status="filled"] {
+    background: transparent !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .ad-banner-horizontal {
+        margin: 15px 0;
+        min-height: 100px;
+    }
+    
+    .ad-banner-horizontal .adsbygoogle {
+        min-height: 100px !important;
+        height: 100px !important;
+    }
+    
+    .vertical-ad {
+        display: none !important;
+    }
+}
+
+/* Ensure sticky ads work properly */
+.sticky-top {
+    overflow: visible !important;
+}
+
+/* Fix for Bootstrap columns */
+[class*="col-"] {
+    overflow: visible !important;
+}
+
+.ad-section-responsive {
+    width: 100%;
+    margin: 20px 0;
+    display: block !important;
+    visibility: visible !important;
+}
 
 
 

@@ -1,6 +1,19 @@
 import { db } from './firebase-config.js';
 import { collection, query, where, orderBy, limit, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
+// Global function to initialize ads (call this after loading content)
+window.initializeAds = function() {
+    console.log('Initializing ads after content load...');
+    if (window.adsbygoogle) {
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        
+        // Additional push for safety
+        setTimeout(() => {
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        }, 500);
+    }
+};
+
 async function loadBreakingNews() {
     try {
         const breakingNewsQuery = query(
@@ -28,6 +41,9 @@ async function loadBreakingNews() {
             if (breakingNews[2]) {
                 document.getElementById('secondaryBreakingNews2').innerHTML = createSecondaryNewsHTML(breakingNews[2]);
             }
+            
+            // Initialize ads after content is loaded
+            setTimeout(initializeAds, 100);
         }
     } catch (error) {
         console.error('Error loading breaking news:', error);
@@ -126,7 +142,6 @@ async function loadSectionNews(section, containerId, itemLimit = 4) {
         const container = document.getElementById(containerId);
 
         if (container && !snapshot.empty) {
-    
             container.innerHTML = snapshot.docs.map((doc, index) => {
                 const news = doc.data();
                 return `
@@ -168,6 +183,9 @@ async function loadSectionNews(section, containerId, itemLimit = 4) {
                         </div>
                     </article>`;
             }).join('');
+            
+            // Initialize ads after section content is loaded
+            setTimeout(initializeAds, 100);
         }
     } catch (error) {
         console.error(`Error loading ${section} news:`, error);
@@ -217,3 +235,6 @@ function loadAllSections() {
     loadSectionNews('stories', 'storiesGrid');
     loadBreakingNews();
 }
+
+// Export for global access
+window.loadAllSections = loadAllSections;
