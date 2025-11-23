@@ -30,6 +30,14 @@
     <script>
         (function(){
             var io;
+            function sanitize(el){
+                try {
+                    el.style.removeProperty('height');
+                    el.style.removeProperty('min-height');
+                    el.style.removeProperty('background');
+                    el.style.removeProperty('width');
+                } catch(e){}
+            }
             function setupLazyInit(){
                 try { window.adsbygoogle = window.adsbygoogle || []; } catch(e){ window.adsbygoogle = []; }
                 if (io) return;
@@ -38,6 +46,7 @@
                         var ad = entry.target;
                         if (!entry.isIntersecting) return;
                         try {
+                            sanitize(ad);
                             if (ad.getAttribute('data-init') === 'true') { io.unobserve(ad); return; }
                             if (ad.querySelector('iframe')) { io.unobserve(ad); return; }
                             if (!window.adsbygoogle || typeof window.adsbygoogle.push !== 'function') return;
@@ -66,6 +75,9 @@
                     mutations.forEach(function(m){
                         m.addedNodes.forEach(function(node){
                             if (node && node.nodeType === 1) {
+                                if (node.matches && (node.matches('ins.adsbygoogle') || node.matches('.ad-space') || node.matches('.ad-container'))) {
+                                    try { node.removeAttribute('style'); } catch(e){}
+                                }
                                 if (node.matches && node.matches('ins.adsbygoogle')) found = true;
                                 else if (node.querySelectorAll && node.querySelectorAll('ins.adsbygoogle').length) found = true;
                             }
