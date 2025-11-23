@@ -29,25 +29,32 @@
         crossorigin="anonymous"></script>
     <script>
         (function(){
-            function initAds() {
+            var io;
+            function setupLazyInit(){
                 try { window.adsbygoogle = window.adsbygoogle || []; } catch(e){ window.adsbygoogle = []; }
-                var ads = document.querySelectorAll('ins.adsbygoogle');
-                ads.forEach(function(ad){
-                    try {
-                        if (ad.getAttribute('data-init') === 'true') return;
-                        if (ad.querySelector('iframe')) return;
-                        if (!window.adsbygoogle || typeof window.adsbygoogle.push !== 'function') return;
-                        window.adsbygoogle.push({});
-                        ad.setAttribute('data-init', 'true');
-                    } catch (e) {}
-                });
+                if (io) return;
+                io = new IntersectionObserver(function(entries){
+                    entries.forEach(function(entry){
+                        var ad = entry.target;
+                        if (!entry.isIntersecting) return;
+                        try {
+                            if (ad.getAttribute('data-init') === 'true') { io.unobserve(ad); return; }
+                            if (ad.querySelector('iframe')) { io.unobserve(ad); return; }
+                            if (!window.adsbygoogle || typeof window.adsbygoogle.push !== 'function') return;
+                            window.adsbygoogle.push({});
+                            ad.setAttribute('data-init', 'true');
+                        } catch (e) {}
+                        try { io.unobserve(ad); } catch(e){}
+                    });
+                }, { root: null, rootMargin: '200px', threshold: 0 });
+                document.querySelectorAll('ins.adsbygoogle').forEach(function(ad){ try { io.observe(ad); } catch(e){} });
             }
             function waitForLibAndInit(timeoutMs) {
                 var start = Date.now(); timeoutMs = timeoutMs || 7000;
                 (function poll(){
-                    if (window.adsbygoogle && typeof window.adsbygoogle.push === 'function') { initAds(); }
+                    if (window.adsbygoogle && typeof window.adsbygoogle.push === 'function') { setupLazyInit(); }
                     else if (Date.now() - start < timeoutMs) { setTimeout(poll, 250); }
-                    else { initAds(); }
+                    else { setupLazyInit(); }
                 })();
             }
             document.addEventListener('DOMContentLoaded', function(){ waitForLibAndInit(7000); });
@@ -66,13 +73,20 @@
                     });
                     if (found) {
                         clearTimeout(window.__adInitDebounceDetail);
-                        window.__adInitDebounceDetail = setTimeout(function(){ waitForLibAndInit(3000); }, 200);
+                        window.__adInitDebounceDetail = setTimeout(function(){
+                            if (io) {
+                                document.querySelectorAll('ins.adsbygoogle').forEach(function(ad){ try { io.observe(ad); } catch(e){} });
+                            } else {
+                                waitForLibAndInit(3000);
+                            }
+                        }, 200);
                     }
                 });
                 var target = document.body || document.documentElement;
                 if (target && (target.nodeType === 1 || target.nodeType === 9)) {
                     try { observer.observe(target, { childList: true, subtree: true }); } catch(e) {}
                 }
+                setupLazyInit();
             });
         })();
     </script>

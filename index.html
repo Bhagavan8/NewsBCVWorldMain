@@ -121,38 +121,29 @@
          * (no iframe injected after a short delay) with .ad-unfilled for graceful fallback.
          */
         (function(){
-            function initSingleAds() {
-                try {
-                    window.adsbygoogle = window.adsbygoogle || [];
-                } catch (e) {
-                    window.adsbygoogle = [];
-                }
-
-                var ads = document.querySelectorAll('ins.adsbygoogle');
-                ads.forEach(function(ad){
-                    try {
-                        if (ad.getAttribute('data-init') === 'true') return;
-                        if (ad.querySelector('iframe')) return;
-
-                        // If script not ready, skip — caller will retry
-                        if (!window.adsbygoogle || typeof window.adsbygoogle.push !== 'function') return;
-
-                        // Push to adsbygoogle to request slot render
-                        window.adsbygoogle.push({});
-                        ad.setAttribute('data-init', 'true');
-
-                        // After a short delay, check whether an iframe was injected
-                        setTimeout(function(){
-                            if (!ad.querySelector('iframe')) {
-                                ad.classList.add('ad-unfilled');
-                            } else {
-                                ad.classList.remove('ad-unfilled');
-                            }
-                        }, 1400);
-                    } catch (e) {
-                        console.warn('initSingleAds per-ad error', e);
-                    }
-                });
+            var io;
+            function setupLazyInit(){
+                try { window.adsbygoogle = window.adsbygoogle || []; } catch(e){ window.adsbygoogle = []; }
+                if (io) return;
+                io = new IntersectionObserver(function(entries){
+                    entries.forEach(function(entry){
+                        var ad = entry.target;
+                        if (!entry.isIntersecting) return;
+                        try {
+                            if (ad.getAttribute('data-init') === 'true') { io.unobserve(ad); return; }
+                            if (ad.querySelector('iframe')) { io.unobserve(ad); return; }
+                            if (!window.adsbygoogle || typeof window.adsbygoogle.push !== 'function') return;
+                            window.adsbygoogle.push({});
+                            ad.setAttribute('data-init', 'true');
+                            setTimeout(function(){
+                                if (!ad.querySelector('iframe')) { ad.classList.add('ad-unfilled'); }
+                                else { ad.classList.remove('ad-unfilled'); }
+                            }, 1400);
+                            io.unobserve(ad);
+                        } catch(e){}
+                    });
+                }, { root: null, rootMargin: '200px', threshold: 0 });
+                document.querySelectorAll('ins.adsbygoogle').forEach(function(ad){ try { io.observe(ad); } catch(e){} });
             }
 
             // Retry helper: waits for adsbygoogle lib to be ready then calls init
@@ -161,12 +152,12 @@
                 timeoutMs = timeoutMs || 7000;
                 (function poll(){
                     if (window.adsbygoogle && typeof window.adsbygoogle.push === 'function') {
-                        initSingleAds();
+                        setupLazyInit();
                     } else if (Date.now() - start < timeoutMs) {
                         setTimeout(poll, 250);
                     } else {
                         // final attempt regardless
-                        initSingleAds();
+                        setupLazyInit();
                     }
                 })();
             }
@@ -187,9 +178,14 @@
                     });
                 });
                 if (found) {
-                    // Debounce short to allow multiple mutations to settle
                     clearTimeout(window.__adInitDebounce);
-                    window.__adInitDebounce = setTimeout(function(){ waitForLibAndInit(3000); }, 250);
+                    window.__adInitDebounce = setTimeout(function(){
+                        if (io) {
+                            document.querySelectorAll('ins.adsbygoogle').forEach(function(ad){ try { io.observe(ad); } catch(e){} });
+                        } else {
+                            waitForLibAndInit(3000);
+                        }
+                    }, 250);
                 }
             });
             document.addEventListener('DOMContentLoaded', function(){
@@ -197,6 +193,7 @@
                 if (target && (target.nodeType === 1 || target.nodeType === 9)) {
                     try { mo.observe(target, { childList: true, subtree: true }); } catch(e) {}
                 }
+                setupLazyInit();
             });
 
             // Expose a simple diagnostics helper (call from console)
