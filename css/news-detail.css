@@ -1127,3 +1127,6 @@ ins.adsbygoogle[data-ad-status="filled"] {
         color: #e2e8f0;
     }
 }
+
+.ad-backup-content { display: none; }
+.ad-backup-content .list-group-item { padding: .35rem .5rem; }
