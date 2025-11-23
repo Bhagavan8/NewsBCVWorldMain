@@ -14,6 +14,28 @@ window.initializeAds = function() {
     }
 };
 
+// Enhanced ad monitoring and fallback system
+window.monitorAndHandleAds = function() {
+    setTimeout(() => {
+        const ads = document.querySelectorAll('ins.adsbygoogle');
+        console.log(`🔄 Monitoring ${ads.length} ad units for status...`);
+        
+        ads.forEach((ad) => {
+            const status = ad.getAttribute('data-ad-status');
+            const container = ad.closest('.ad-container, .ad-banner-horizontal');
+            const backupContent = container ? container.querySelector('.ad-backup-content') : null;
+            
+            if (status === 'unfilled' && backupContent) {
+                console.log(`❌ Ad unfilled, showing backup content for slot: ${ad.getAttribute('data-ad-slot')}`);
+                ad.style.display = 'none';
+                backupContent.style.display = 'block';
+            } else if (status === 'filled' && backupContent) {
+                backupContent.style.display = 'none';
+            }
+        });
+    }, 5000); // Check after 5 seconds
+};
+
 async function loadBreakingNews() {
     try {
         const breakingNewsQuery = query(
@@ -43,7 +65,10 @@ async function loadBreakingNews() {
             }
             
             // Initialize ads after content is loaded
-            setTimeout(initializeAds, 100);
+            setTimeout(() => {
+                initializeAds();
+                monitorAndHandleAds();
+            }, 100);
         }
     } catch (error) {
         console.error('Error loading breaking news:', error);
@@ -185,7 +210,10 @@ async function loadSectionNews(section, containerId, itemLimit = 4) {
             }).join('');
             
             // Initialize ads after section content is loaded
-            setTimeout(initializeAds, 100);
+            setTimeout(() => {
+                initializeAds();
+                monitorAndHandleAds();
+            }, 100);
         }
     } catch (error) {
         console.error(`Error loading ${section} news:`, error);
@@ -238,3 +266,12 @@ function loadAllSections() {
 
 // Export for global access
 window.loadAllSections = loadAllSections;
+
+// Enhanced ad refresh function
+window.refreshAdsWithFallback = function() {
+    console.log('🔄 Refreshing ads with fallback handling...');
+    if (window.adsbygoogle) {
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        setTimeout(monitorAndHandleAds, 3000);
+    }
+};
